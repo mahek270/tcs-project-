@@ -1,0 +1,62 @@
+#include <Servo.h>
+int value = 0;
+int avg_value = 0;
+int sensorPin = A5;  //connect ir receiver output to this pin
+int buttonPin = 18;  // button pin to A4
+boolean buttonState = HIGH; 
+boolean sanitiserState = LOW;
+int ledPin = 13; //this is for testing purpose
+int sanitisertank = 0;
+Servo myservo;  // create servo object to control a servo
+// twelve servo objects can be created on most boards
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(buttonPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(buttonPin, HIGH);
+  //servo motor is connected to Arduino digital pin 3
+  myservo.attach(3);
+}
+
+void loop() {
+  buttonState = digitalRead(buttonPin);
+  delay(50);
+  if(buttonState==LOW && tapState==LOW){
+    digitalWrite(ledPin, HIGH);
+    myservo.write(0);
+    delay(7000);
+    sanitisertankState = HIGH;
+    sanitisertank = 1;  // check either tap was on for button press or not
+    }
+  else if(buttonState==LOW && sanitisertank1==HIGH && sanitisertank==1){
+    digitalWrite(ledPin, LOW);
+    myservo.write(80);
+    delay(100);
+   sanitisertank1 = LOW;
+    sanitisertank = 0;
+    }
+  // put your main code here, to run repeatedly:
+  for(int i=0; i<20; i++){
+     value += analogRead(sensorPin);
+     delay(5);
+    }
+  avg_value = value / 20;
+  Serial.println(avg_value);
+  if(avg_value<=500){
+    digitalWrite(ledPin, HIGH);
+    myservo.write(0);
+    delay(7000);
+    sanitisertank1 = HIGH;
+    if(sanitisertank==0)
+      sanitisertank = 2; // check sanitisercrane was on using sensor data
+    }
+  if(avg_value>500 && sanitisertank==2){
+    digitalWrite(ledPin, LOW);
+    myservo.write(80);
+    delay(100);
+    tapState = LOW;
+    }
+    value = 0;   
+}
